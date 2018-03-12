@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>vue-demo</title>
+    <script src="./vue.js"></script>
+    <style>
+        #app{
+            width:800px;
+            margin:20px auto;
+        }
+        #app > #tb{
+            width:800px;
+            border-collapse: collapse;
+            margin:20px auto;
+        }
+        #tb th{
+            background:#0094ff;
+            color:white;
+            font-size:16px;
+            padding:5px;
+            text-align:center;
+            border:1px solid black;
+        }
+        #tb td{
+            padding:5px;
+            text-align:center;
+            border:1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <input type="text" v-model="id">
+        <input type="text" v-model="pName">
+        <button @click="addData">添加数据</button>
+        <table id="tb">
+            <tr>
+                <th>编号</th>
+                <th>名称</th>
+                <th>创建时间</th>
+                <th>操作</th>
+            </tr>
+            <tr>
+                <td v-if="list.length === 0" colspan="4">当前列表没有数据</td>
+            </tr>
+            <tr v-for="item in list">
+                <td>{{item.id}}</td>
+                <td>{{item.name}}</td>
+                <td>{{item.ctime | datefmt}}</td>
+                <td><a @click="delData(item.id)" href="javascipt:void(0);">删除</a></td>
+            </tr>
+        </table>
+    </div>
+
+    <script>
+    Vue.filter("datefmt",function (input) {
+        var result = '';
+        var year = input.getFullYear();
+        var month = input.getMonth();
+        var day = input.getDate();
+        result = year +'-'+month+'-'+day;
+        return result;
+    })
+    var vm = new Vue({
+        el:"#app",
+        data:{
+            list:[
+                {
+                    id:1,
+                    name:"奔驰",
+                    ctime:new Date()
+                },
+                {
+                    id:2,
+                    name:"宝马",
+                    ctime:new Date()
+                }
+            ],
+            id:0,
+            pName:''
+        },
+        methods:{
+            addData:function(){
+                var p = {
+                    id:this.id,
+                    name:this.pName,
+                    ctime:new Date()
+                };
+                this.list.push(p)
+            },
+            delData:function(id){
+                if(!confirm("是否要删除数据？")){
+                    return ;
+                }
+                var index = this.list.findIndex(function(item){
+                    return item.id === id;
+                })
+                this.list.splice(index, 1);
+            }
+        }
+    });
+    </script>
+</body>
+</html>
